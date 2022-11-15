@@ -9,28 +9,16 @@ public class Share {
         this.acquisitionPrice = acquisitionPrice;
     }
 
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public int getQty() {
-        return qty;
-    }
-
     public void add(int qty, double acquisitionPrice) {
         this.acquisitionPrice += acquisitionPrice;
         this.qty += qty;
     }
-
-    public double getAcquisitionPrice() {
-        return acquisitionPrice;
+    public void subtract(int qty) {
+        this.acquisitionPrice -= qty * (this.acquisitionPrice / this.qty);
+        this.qty -= qty;
     }
 
-    public void setAcquisitionPrice(double acquisitionPrice) {
-        this.acquisitionPrice = acquisitionPrice;
+    public String toString() {
+        return String.format("Ticker: %s, Qty: %d, Total cost: %.2f\n", ticker, qty, acquisitionPrice);
     }
 }

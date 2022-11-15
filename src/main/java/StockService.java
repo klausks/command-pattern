@@ -8,44 +8,51 @@ public class StockService {
     public StockService() {
         orders = new ArrayList<>();
         stockPrices = new HashMap<>();
-        stockPrices.put("PETR4", 20.7);
-        stockPrices.put("IRBR3", 25.2);
-        stockPrices.put("B3SA3", 27.0);
     }
 
     public void placeOrder(Order order) {
         orders.add(order);
+        System.out.println(String.format("Placed %s", order.toString()));
     }
 
     public void processOrders() {
-        for (Order order: orders) {
+        Iterator<Order> ordersIterator = orders.iterator() ;
+        while (ordersIterator.hasNext()) {
+            Order order = ordersIterator.next();
             double pricePoint = order.pricePoint;
             double currentStockPrice = getStockPrice(order.ticker);
+            boolean shouldProcessForCurrentPrice = pricePoint == 0 ? true : false;
             if (order instanceof BuyOrder) {
-                if (pricePoint <= currentStockPrice) {
-                    buyStock(order.owner, order.ticker, order.qty);
+                if (shouldProcessForCurrentPrice || pricePoint <= currentStockPrice) {
+                    buyStock(order);
+                    ordersIterator.remove();
                 }
             } else if (order instanceof SellOrder) {
-                if (pricePoint >= currentStockPrice) {
-                    sellStock(order.owner, order.ticker, order.qty);
+                if (shouldProcessForCurrentPrice || pricePoint >= currentStockPrice) {
+                    sellStock(order);
+                    ordersIterator.remove();
                 }
             }
         }
     }
 
-    private void buyStock(User owner, String ticker, int qty) {
-        double currentStockPrice = stockPrices.get(ticker);
-        double acquisitionCost = currentStockPrice * qty;
+    private void buyStock(Order order) {
+        double currentStockPrice = stockPrices.get(order.ticker);
+        double acquisitionCost = currentStockPrice * order.qty;
         try {
-            owner.subtractFromBalance(acquisitionCost);
+            order.owner.subtractFromBalance(acquisitionCost);
         } catch (IllegalArgumentException iae) {
             System.out.println("Could not fulfill buy order due to insufficient account funds.");
         }
-        owner.addShare(ticker, qty, acquisitionCost);
+        order.owner.addShare(order.ticker, order.qty, acquisitionCost);
+        order.owner.addExecutedOrder(order.toString());
     }
 
-    private void sellStock(User owner, String ticker, int qty) {
-        Share currentShare = owner.getShare(ticker).get();
+    private void sellStock(Order order) {
+        double currentStockPrice = stockPrices.get(order.ticker);
+        order.owner.removeShare(order.ticker, order.qty);
+        order.owner.addToBalance(order.qty * currentStockPrice);
+        order.owner.addExecutedOrder(order.toString());
     }
 
     public void updateStockPrice(String ticker, double newPrice) {
@@ -55,4 +62,6 @@ public class StockService {
     public double getStockPrice(String ticker) {
         return stockPrices.get(ticker);
     }
+
+    public void setStockPrices(Map<String, Double> stockPrices) { this.stockPrices = stockPrices; }
 }

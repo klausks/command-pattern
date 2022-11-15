@@ -15,6 +15,7 @@ public class User {
         this.shares = new HashMap<>();
         this.name = name;
         this.accountId = accountId;
+        this.executedOrdersHistory = new ArrayList<>();
     }
 
     public double getAccountBalance() {
@@ -27,6 +28,10 @@ public class User {
 
     public Map<String, Share> getShares() {
         return shares;
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     public Optional<Share> getShare(String ticker) {
@@ -43,6 +48,15 @@ public class User {
         }
     }
 
+    public void removeShare(String ticker, int qty) {
+        Optional<Share> share = getShare(ticker);
+        if (share.isPresent()) {
+            share.get().subtract(qty);
+        } else {
+            throw new IllegalArgumentException("No share of stock %s held by %s was found.");
+        }
+    }
+
     public List<String> getExecutedOrdersHistory() {
         return executedOrdersHistory;
     }
@@ -51,10 +65,38 @@ public class User {
         this.executedOrdersHistory.add(order);
     }
 
-    public void subtractFromBalance(double acquisitionCost) throws IllegalArgumentException {
-        if (acquisitionCost > accountBalance) {
+    public void subtractFromBalance(double amount) throws IllegalArgumentException {
+        if (amount > accountBalance) {
             throw new IllegalArgumentException();
         }
-        this.accountBalance -= acquisitionCost;
+        this.accountBalance -= amount;
     }
+
+    public void addToBalance(double amount) {
+        this.accountBalance += amount;
+    }
+
+    public String accountSummary() {
+        return String.format("----- Account summary for %s ------\n Account balance: %.2f\n--- Shares ---\n%s\n--- Transaction History ---\n%s",
+                name, accountBalance, sharesSummary(), executedOrdersSummary()
+        );
+    }
+
+    public String sharesSummary() {
+        StringBuilder sb = new StringBuilder();
+        for (Share share: shares.values()) {
+            sb.append(share.toString());
+        }
+        return sb.toString();
+    }
+
+    public String executedOrdersSummary() {
+        StringBuilder sb = new StringBuilder();
+        for (String orderDetails : executedOrdersHistory) {
+            sb.append(orderDetails);
+        }
+        return sb.toString();
+    }
+
+
 }

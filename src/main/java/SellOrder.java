@@ -9,6 +9,6 @@ public class SellOrder extends Order {
     }
 
     public String toString() {
-        return String.format("SELL Order placed for %f units of %s at pricepoint %.2f", qty, ticker, pricePoint);
+        return String.format("SELL Order by %s for %d units of %s at pricepoint %.2f\n", owner.getName(), qty, ticker, pricePoint);
     }
 }
