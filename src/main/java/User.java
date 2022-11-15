@@ -18,18 +18,6 @@ public class User {
         this.executedOrdersHistory = new ArrayList<>();
     }
 
-    public double getAccountBalance() {
-        return accountBalance;
-    }
-
-    public void setAccountBalance(double accountBalance) {
-        this.accountBalance = accountBalance;
-    }
-
-    public Map<String, Share> getShares() {
-        return shares;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -55,10 +43,6 @@ public class User {
         } else {
             throw new IllegalArgumentException("No share of stock %s held by %s was found.");
         }
-    }
-
-    public List<String> getExecutedOrdersHistory() {
-        return executedOrdersHistory;
     }
 
     public void addExecutedOrder(String order) {
