@@ -23,12 +23,12 @@ public class StockService {
             double currentStockPrice = getStockPrice(order.ticker);
             boolean shouldProcessForCurrentPrice = pricePoint == 0 ? true : false;
             if (order instanceof BuyOrder) {
-                if (shouldProcessForCurrentPrice || pricePoint <= currentStockPrice) {
+                if (shouldProcessForCurrentPrice || currentStockPrice <= currentStockPrice) {
                     buyStock(order);
                     ordersIterator.remove();
                 }
             } else if (order instanceof SellOrder) {
-                if (shouldProcessForCurrentPrice || pricePoint >= currentStockPrice) {
+                if (shouldProcessForCurrentPrice || currentStockPrice >= pricePoint) {
                     sellStock(order);
                     ordersIterator.remove();
                 }
