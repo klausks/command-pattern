@@ -45,14 +45,14 @@ public class StockService {
             System.out.println("Could not fulfill buy order due to insufficient account funds.");
         }
         order.owner.addShare(order.ticker, order.qty, acquisitionCost);
-        order.owner.addExecutedOrder(order.toString());
+        order.owner.addExecutedOrder(order.toString(currentStockPrice));
     }
 
     private void sellStock(Order order) {
         double currentStockPrice = stockPrices.get(order.ticker);
         order.owner.removeShare(order.ticker, order.qty);
         order.owner.addToBalance(order.qty * currentStockPrice);
-        order.owner.addExecutedOrder(order.toString());
+        order.owner.addExecutedOrder(order.toString(currentStockPrice));
     }
 
     public void updateStockPrice(String ticker, double newPrice) {

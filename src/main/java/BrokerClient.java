@@ -35,6 +35,11 @@ public class BrokerClient {
 
         System.out.println(william.accountSummary());
 
+        stockService.updateStockPrice("WEGE3", 50);
+
+        stockService.processOrders();
+
+        System.out.println(william.accountSummary());
 
     }
 

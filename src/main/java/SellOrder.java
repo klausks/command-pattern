@@ -8,7 +8,7 @@ public class SellOrder extends Order {
         stockService.placeOrder(this);
     }
 
-    public String toString() {
-        return String.format("SELL Order by %s for %d units of %s at pricepoint %.2f\n", owner.getName(), qty, ticker, pricePoint);
+    public String toString(double price) {
+        return String.format("SELL Order by %s for %d units of %s at price %.2f\n", owner.getName(), qty, ticker, price);
     }
 }

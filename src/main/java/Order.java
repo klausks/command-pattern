@@ -15,5 +15,5 @@ public abstract class Order {
     }
 
     public abstract void execute();
-    public abstract String toString();
+    public abstract String toString(double price);
 }
